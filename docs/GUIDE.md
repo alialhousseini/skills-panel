@@ -21,7 +21,7 @@ Use this when a project never needs a skill.
 
 The skill is now off in every chat in this folder. Other folders are not changed.
 
-<!-- screenshot to add: images/panel.png (The Skills page with topics and switches) -->
+![The Skills page with topics and switches](images/panel.png)
 
 ## Turn it off for this chat only
 

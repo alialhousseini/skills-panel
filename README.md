@@ -7,6 +7,8 @@ Switch Claude's skills on and off with simple switches, for one project or just 
 [![License: MIT](https://img.shields.io/github/license/alialhousseini/skills-panel)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/alialhousseini/skills-panel?style=social)](https://github.com/alialhousseini/skills-panel/stargazers)
 
+![The Skills Panel: skills grouped by topic, each with a switch](docs/images/panel.png)
+
 ## Why you'd want it
 
 - **Too many skills make Claude pick the wrong one.** Turn off the ones a project doesn't need.
