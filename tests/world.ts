@@ -245,9 +245,19 @@ export function world(on: On, settings: WorldOptions = {}): World {
   return w
 }
 
-/** The engine hands hooks Windows paths with backslashes; the fake disk keys them with slashes. */
+/**
+ * A path as the fake disk keys it: `C:/home/x`, on every operating system.
+ *
+ * The engine hands a hook the path the way the system resolves it. On Windows
+ * that is `C:\home\x`. On Linux and macOS `C:/home/x` is not an absolute path,
+ * so it arrives with the working directory in front (`/work/repo/C:/home/x`).
+ * Slashes are made the same, and whatever stands before the drive is dropped.
+ */
 export function norm(path: string): string {
-  return path.split(String.fromCharCode(92)).join('/')
+  const slashed = path.split(String.fromCharCode(92)).join('/')
+  const drive = slashed.lastIndexOf(':/') - 1
+
+  return drive > 0 ? slashed.slice(drive) : slashed
 }
 
 export function parsedOr(text: string | undefined): Record<string, unknown> {
