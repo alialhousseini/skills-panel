@@ -1,0 +1,14 @@
+{
+  "name": "skills-panel",
+  "owner": {
+    "name": "Ali Al Housseini"
+  },
+  "description": "Skills Panel for Claude Code: switch skills on and off for one project or one chat.",
+  "plugins": [
+    {
+      "name": "skills-panel",
+      "source": "./",
+      "description": "Switch Claude's skills on and off with simple switches, for one project or just one chat. Profiles, focus, history and undo. Never edits your skill files."
+    }
+  ]
+}

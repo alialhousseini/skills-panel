@@ -1,0 +1,70 @@
+name: Bug report
+description: Something in the panel does not work as it should.
+title: "Bug: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time. Short answers are fine.
+
+        Please leave out private things: folder names, client names and skill names you would not post in public.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you press, and what did you see?
+      placeholder: I flipped the switch for a skill under "This project" and the panel said…
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to see it again
+      placeholder: |
+        1. Type /skills-panel
+        2. Open the Profiles page
+        3. …
+    validations:
+      required: false
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where do you use Claude Code?
+      options:
+        - Claude desktop app
+        - Terminal
+        - VS Code
+        - Mobile
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Claude Code version
+      description: Run `claude --version` in a terminal. Skip this if you only use the desktop app.
+      placeholder: 2.1.322
+    validations:
+      required: false
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: Windows 11, macOS 15, Ubuntu 24.04…
+    validations:
+      required: false
+  - type: textarea
+    id: message
+    attributes:
+      label: The message the panel showed, if any
+      description: Copy the coloured line near the top of the panel.
+      render: text
+    validations:
+      required: false

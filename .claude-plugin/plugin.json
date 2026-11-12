@@ -1,0 +1,35 @@
+{
+  "name": "skills-panel",
+  "version": "1.0.0",
+  "description": "Switch Claude's skills on and off with simple switches, for one project or just one chat. Profiles, focus, history and undo. Never edits your skill files.",
+  "author": {
+    "name": "Ali Al Housseini",
+    "url": "https://github.com/alialhousseini"
+  },
+  "homepage": "https://github.com/alialhousseini/skills-panel",
+  "repository": "https://github.com/alialhousseini/skills-panel",
+  "license": "MIT",
+  "keywords": [
+    "skills",
+    "claude-code",
+    "panel",
+    "profiles",
+    "focus",
+    "undo"
+  ],
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "trackUsage": {
+      "type": "boolean",
+      "title": "Count skill usage",
+      "description": "Count how often each skill is used in each folder, so the panel can show \"used 5×\" and list unused skills. The counts stay on this computer.",
+      "default": true
+    },
+    "unusedDays": {
+      "type": "number",
+      "title": "Days until a skill counts as unused",
+      "description": "A skill that is on in a folder but was not used there for this many days is listed under Unused.",
+      "default": 30
+    }
+  }
+}

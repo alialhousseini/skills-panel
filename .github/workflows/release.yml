@@ -1,0 +1,106 @@
+name: Release
+
+# Runs when a version tag (v1.2.3) is pushed. It checks the tag against
+# plugin.json, runs the same checks as CI, zips the plugin into
+# `skills-panel.plugin`, and creates the GitHub release with that file.
+#
+# Only people who can push tags to this repository can start it.
+#
+# Two jobs, so the token that can write never meets code from outside:
+#   check    read-only. Installs Claude Code and runs the plugin's tests.
+#   publish  can create the release. Runs only `jq`, `zip` and `gh`.
+
+on:
+  push:
+    tags: ['v*.*.*']
+
+# Nothing by default; each job asks for what it needs.
+permissions: {}
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  check:
+    name: Validate and test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # The tag name reaches the script as an environment variable, never as
+      # text pasted into the command.
+      - name: Check the tag matches plugin.json
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          version="$(jq -r '.version' .claude-plugin/plugin.json)"
+          if [ "v$version" != "$TAG" ]; then
+            echo "::error::Tag $TAG does not match the version in plugin.json ($version)."
+            exit 1
+          fi
+          echo "Releasing version $version."
+
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          package-manager-cache: false
+
+      - name: Install Claude Code
+        run: |
+          npm install --global @anthropic-ai/claude-code@2.1.322
+          claude --version
+
+      - name: Use an empty Claude config folder
+        run: echo "CLAUDE_CONFIG_DIR=$RUNNER_TEMP/claude" >> "$GITHUB_ENV"
+
+      - name: Validate the plugin
+        run: claude plugin validate .
+
+      - name: Run the tests
+        run: claude plugin test .
+
+  publish:
+    name: Publish the plugin file
+    needs: check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write # create the release and attach its file; nothing else
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # The plugin file is a zip with `.claude-plugin/` at its top. It leaves
+      # out what only the repository needs: git data, workflows, tests, the
+      # guide and its pictures, the marketplace file, the types the engine
+      # writes, logs and editor files.
+      - name: Package the plugin file
+        run: |
+          if [ -n "$(find . -path ./.git -prune -o -type l -print)" ]; then
+            echo "::error::The repository holds a symbolic link; a plugin file must not."
+            exit 1
+          fi
+          zip -r -q skills-panel.plugin . \
+            -x '.git/*' '.github/*' 'tests/*' 'docs/*' 'node_modules/*' \
+               '.claude-plugin/types/*' '.claude-plugin/marketplace.json' '.mcpb-cache/*' \
+               '*.log' '*.DS_Store' '*~' '*.swp' 'skills-panel.plugin'
+          unzip -l skills-panel.plugin
+          unzip -l skills-panel.plugin | grep -q ' \.claude-plugin/plugin\.json$'
+          unzip -l skills-panel.plugin | grep -q ' hooks/register\.tsx$'
+
+      # The token is handed to this step alone.
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: gh release create "$TAG" skills-panel.plugin --verify-tag --generate-notes --title "Skills Panel $TAG"

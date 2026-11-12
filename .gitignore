@@ -1,0 +1,7 @@
+# Type files Claude Code writes beside a plugin it loads
+.claude-plugin/types/
+
+node_modules/
+*.log
+.DS_Store
+skills-panel.plugin

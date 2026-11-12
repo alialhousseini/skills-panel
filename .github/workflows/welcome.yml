@@ -1,0 +1,45 @@
+name: Welcome
+
+# Greets someone the first time they open an issue or a pull request here.
+#
+# `pull_request_target` is used so the greeting can be posted on a pull request
+# from a fork. That trigger runs with a token that can write, so this workflow
+# keeps to two rules:
+#   1. It never checks out or runs code from the pull request. There is no
+#      checkout step and no `run:` step at all.
+#   2. It uses nothing the author of the issue or pull request typed. The two
+#      messages below are fixed text.
+
+on:
+  issues:
+    types: [opened]
+  pull_request_target:
+    types: [opened]
+
+# Nothing by default; the one job asks for what it needs.
+permissions: {}
+
+jobs:
+  welcome:
+    name: Greet a first-time contributor
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      issues: write # comment on a first issue
+      pull-requests: write # comment on a first pull request
+    steps:
+      - name: Say hello
+        uses: actions/first-interaction@1c4688942c71f71d4f5502a26ea67c331730fa4d # v3.1.0
+        with:
+          issue_message: |
+            Thanks for opening your first issue here.
+
+            A maintainer will read it soon. If it is a bug, the Claude Code version (`claude --version`) and the steps to see it again help a lot.
+
+            Want to fix it yourself? [CONTRIBUTING.md](${{ github.server_url }}/${{ github.repository }}/blob/main/CONTRIBUTING.md) shows how in five steps.
+          pr_message: |
+            Thanks for your first pull request here.
+
+            Two checks run on it: `claude plugin validate` and `claude plugin test`. If one fails, its log says which test and why.
+
+            [CONTRIBUTING.md](${{ github.server_url }}/${{ github.repository }}/blob/main/CONTRIBUTING.md) has the short checklist a maintainer will look for.

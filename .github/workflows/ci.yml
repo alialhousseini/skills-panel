@@ -1,0 +1,55 @@
+name: CI
+
+# Checks every push to main and every pull request: the plugin must load the
+# way Claude Code loads it, and its tests must pass.
+#
+# Safe for pull requests from forks: `pull_request` runs with a read-only token
+# and no secrets, and this workflow uses none.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Nothing by default; each job asks for what it needs.
+permissions: {}
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Validate and test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          package-manager-cache: false
+
+      # A pinned version, so a new release cannot change what CI checks.
+      # `plugin validate` and `plugin test` need no login.
+      - name: Install Claude Code
+        run: |
+          npm install --global @anthropic-ai/claude-code@2.1.322
+          claude --version
+
+      # A config folder of its own, so nothing on the runner is read or written.
+      - name: Use an empty Claude config folder
+        run: echo "CLAUDE_CONFIG_DIR=$RUNNER_TEMP/claude" >> "$GITHUB_ENV"
+
+      - name: Validate the plugin
+        run: claude plugin validate .
+
+      - name: Run the tests
+        run: claude plugin test .

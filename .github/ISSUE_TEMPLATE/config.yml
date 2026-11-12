@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question or idea to talk over
+    url: https://github.com/alialhousseini/skills-panel/discussions
+    about: Ask how to do something, or float an idea before writing it up.
+  - name: Security problem
+    url: https://github.com/alialhousseini/skills-panel/security/advisories/new
+    about: Report it privately. Please do not open a public issue for it.
