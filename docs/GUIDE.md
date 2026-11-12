@@ -118,7 +118,7 @@ The panel counts how often each skill runs in each folder. The counts stay on yo
 2. Press **Unused** to list skills that are on here but were not used here for 30 days.
 3. Turn off the ones you don't need. Nothing is turned off for you.
 
-To erase the counts, open **Projects** and press **Clear usage data**. To stop counting, open `/config` in a terminal and turn off **Count skill usage**. You can change the 30 days there too.
+To erase the counts, open **Projects** and press **Clear usage data**. To stop counting, type `/plugin configure skills-panel@skills-panel` in a terminal and turn off **Count skill usage**. You can change the 30 days there too.
 
 <!-- screenshot to add: images/usage.png (The Unused filter) -->
 
@@ -134,6 +134,9 @@ The skill keeps that topic in every project. Pick **Automatic** to let the panel
 <!-- screenshot to add: images/topic.png (Picking another topic for a skill) -->
 
 ## Troubleshooting
+
+**The install stopped with "operation not permitted".**
+On Windows another program sometimes holds the new folder for a moment. Run the same install line again.
 
 **I don't see the panel.**
 Type `/skills-panel`. If nothing happens, type `/reload-plugins` and try again. In a terminal, check that `claude --version` says 2.1.321 or newer.

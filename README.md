@@ -93,7 +93,7 @@ No. They go in `settings.local.json`, which is your own file. If the panel has t
 It had already read that skill earlier in the chat. Start a new chat and it is gone.
 
 **How do I turn off the usage counts?**
-In a terminal, open `/config` and turn off **Count skill usage**. The **Projects** page has a button that clears what was counted.
+In a terminal, type `/plugin configure skills-panel@skills-panel` and turn off **Count skill usage**. The **Projects** page has a button that clears what was counted.
 
 ## Uninstall
 
